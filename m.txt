@@ -1,0 +1,11 @@
+  p =54
+ int  r = 76
+ int  r  =  87
+void funcion(float  v  ,string n,int f,string gato){
+ int t = 8
+
+ if (v > 0.0){
+ m = “Mayor”
+ x = x + 5
+ }
+}
