@@ -158,8 +158,17 @@ def analizar_codigo(nombre_archivo):
         
         palabras = corte_palabras(pal)
         conta = len(palabras)
+        
+        if palabras[numero_linea] !="":  # si encue  x=56
+            if palabras[0] is not tipos_de_datos and "="  in palabras:
+                if palabras[0]!=tipos_de_datos and line[0] is not tabla:
+                    print(f"Error - Línea {numero_linea}: '{palabras[0]}' error de declaracion")
+            
+        
+        
 
         for posicion in range(conta):
+            
             palabra_actual = palabras[posicion].strip()
 
             if palabra_actual in tipos_de_datos and "=" in line:
@@ -167,9 +176,6 @@ def analizar_codigo(nombre_archivo):
                     tabla.agregar_simbolo(palabras[posicion + 1], palabra_actual, alcance_actual)
                 else:
                     errores.append(f"Error - Línea {numero_linea}: '{palabras[posicion + 1]}' no puede ser declarado en una función")
-
-
-
 
             elif palabra_actual == "{":
                 print("se abre una funcion")
@@ -198,6 +204,8 @@ def analizar_codigo(nombre_archivo):
         if "}" in palabras:
             in_funcion = False
             tipo_funcion = None
+
+
 
     if errores:
         for error in errores:
