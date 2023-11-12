@@ -1,4 +1,7 @@
 
+import collections
+import string
+
 operadores = {
     '+': 'Suma',
     '=': 'igual',
@@ -31,7 +34,9 @@ palabras_reservadas_llave=palabras_reservadas.keys()
 class Tabla_Simbolos:
     def __init__(self):
         self.simbolos = {}
+        self.funciones = {}
 
+#------ Métodos para variables------------------------------------------------------
     def agregar_simbolo(self, nombre, tipo, valor=None):
         self.simbolos[nombre] = {'tipo': tipo, 'valor': valor}
 
@@ -41,11 +46,8 @@ class Tabla_Simbolos:
     def obtener_nombres(self):
         return list(self.simbolos.keys())
 
-
-
     def obtener_simbolos(self):
         return [(nombre, simbolo['tipo'], simbolo['valor']) for nombre, simbolo in self.simbolos.items()]
-
 
     def obtener_tipo(self, nombre):
         simbolo = self.buscar_simbolo(nombre)
@@ -54,8 +56,37 @@ class Tabla_Simbolos:
     def obtener_valor(self, nombre):
         simbolo = self.buscar_simbolo(nombre)
         return simbolo['valor'] if simbolo else None
-    
-    
+
+
+
+#----------------------- Métodos para funciones--------------------------------------------------------
+    def agregar_funcion(self, nombre, tipo_retorno):
+        self.funciones[nombre] = {'tipo_retorno': tipo_retorno}
+
+    def buscar_funcion(self, nombre):
+        return self.funciones.get(nombre, {'tipo_retorno': None})
+
+    def obtener_nombres_funciones(self):
+        return list(self.funciones.keys())
+
+    def obtener_funciones(self):
+        return [(nombre, funcion['tipo_retorno']) for nombre, funcion in self.funciones.items()]
+
+    def obtener_tipo_retorno_funcion(self, nombre):
+        funcion = self.buscar_funcion(nombre)
+        return funcion['tipo_retorno'] if funcion else None
+
+
+
+
+
+
+def es_numero(palabra):
+    try:
+        float(palabra)
+        return True
+    except ValueError:
+        return False   
 
   
 
@@ -103,6 +134,7 @@ class AnalizadorSemantico:
 
             self.analizar_linea(linea, numero_linea)
 
+
     def analizar_linea(self, linea, numero_linea):
         
         palabras = corte_palabras(linea.strip())
@@ -114,14 +146,39 @@ class AnalizadorSemantico:
 
 
          if palabra_actual in tipos_de_datos_llave and "=" in palabras:
-                self.tabla_de_simbolos.agregar_simbolo(palabras[1],palabras[0],palabras[3])
+                
+                 if posicion+1<conta and posicion+2<conta:
+                        if palabras[posicion+2]=="=" :
+                            k= palabras[posicion+3]
+
+
+                     
+                            if palabra_actual == "int" and es_numero(k):
+                               self.tabla_de_simbolos.agregar_funcion(palabras[1],palabras[0],palabras[3])
+                             
+
+                            elif palabra_actual == "string" and  es_numero(k)==False  and k!="":
+                                    self.tabla_de_simbolos.agregar_simbolo(palabras[1],palabras[0],palabras[4])
+                                    print ( self.tabla_de_simbolos.obtener_simbolos())
+
+                            elif palabra_actual == "float" and  es_numero(k) :
+                                    self.tabla_de_simbolos.agregar_simbolo(palabras[1],palabras[0],palabras[3])
+
+                            else:
+                            #elif palabra_actual == "void" and  es_numero(k)==False  and k!="" or es_numero(k)==True and '(' is not palabras:
+                                    print(f"Error - Línea {numero_linea}: tipo de dato '{palabras[posicion].strip()}'  incorrecta")
+                                    
+                    
+
+
+
                # print(self.tabla_de_simbolos.obtener_simbolos())
 
-         elif  palabra_actual in self.tabla_de_simbolos.obtener_nombres() and "=" in palabras:
+         elif  palabra_actual in self.tabla_de_simbolos.obtener_nombres() and "=" in palabras :  # buscar si la palabra se encuentra en el ficionario
                      
-                   # print("palabra :["+palabra_actual +" ]se encuente en el toque")# hacer una segregacion de informacion
-               
-                    if posicion+1<conta and posicion+2<conta:
+         
+
+                    if posicion+1<conta and posicion+2<conta: # valorar si la busqueda es correcta
                         if palabras[posicion+1]=="=" :
                             k= palabras[posicion+2]
                             
@@ -129,11 +186,10 @@ class AnalizadorSemantico:
                                  print(f"Error - Línea {numero_linea}: Variable '{palabras[posicion].strip()}' asignacion incorrecta")
                                  
                              
+                            elif self.tabla_de_simbolos.obtener_tipo(palabra_actual) == "string" and  es_numero(k)==True: 
+                             print(f"Error - Línea {numero_linea}: Variable '{palabras[posicion].strip()}' asignacion incorrecta")
                              
-                  
-
-
-          
+        
          elif  palabra_actual!= "" and  "=" in palabras and palabra_actual not in self.tabla_de_simbolos.obtener_nombres():
                 
              if posicion+1<conta:
@@ -141,8 +197,28 @@ class AnalizadorSemantico:
                     print(f"Error - Línea {numero_linea}: Variable '{palabras[posicion].strip()}' NO ESTA DECLARADO") 
 
 
+         elif   "(" in palabras  :
                 
-               
+                if palabra_actual in tipos_de_datos_llave: 
+                    if palabra_actual == "int" and  palabras[ posicion+2]== "(": 
+                            self.tabla_de_simbolos.agregar_funcion(palabras[1],palabras[0])
+
+
+    
+                            print(self.tabla_de_simbolos.obtener_funciones())
+                             
+
+                    elif palabra_actual == "string" and  palabras[ posicion+1]=="(" :    
+                            self.tabla_de_simbolos.agregar_simbolo(palabras[1],palabras[0])
+                            print(self.tabla_de_simbolos.obtener_funciones())
+
+
+                    elif palabra_actual == "float" and  palabras[ posicion+1] =="(": 
+                            self.tabla_de_simbolos.agregar_simbolo(palabras[1],palabras[0])
+                            print(self.tabla_de_simbolos.obtener_funciones())
+
+
+
 
          # self.tabla_de_simbolos.agregar_simbolo(palabras[])
 
