@@ -241,8 +241,12 @@ class AnalizadorSemantico:
                  j=palabras[posicion+4]
                 
                 # if  self.tabla_de_simbolos.buscar_simbolo(j) and k in self.tabla_de_simbolos.obtener_simbolos:
-                 print(self.tabla_de_simbolos.buscar_simbolo(j))
-                 print(self.tabla_de_simbolos.buscar_simbolo(k))
+                 if es_numero(k) and es_numero(j):
+                     print("hola")
+                 elif es_numero(k)==False and es_numero(j)==False:
+                     if self.tabla_de_simbolos.buscar_simbolo()
+                         
+              
                         
                        
          #-----------------------------------con los while y if -------------------------------------------------
