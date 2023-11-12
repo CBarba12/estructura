@@ -174,7 +174,7 @@ class AnalizadorSemantico:
 
                # print(self.tabla_de_simbolos.obtener_simbolos())
 
-         elif  palabra_actual in self.tabla_de_simbolos.obtener_nombres() and "=" in palabras :  # buscar si la palabra se encuentra en el ficionario
+         elif  palabra_actual in self.tabla_de_simbolos.obtener_nombres() and "=" in palabras :  # buscar si la palabra se encuentra en el dicionario
                      
          
 
@@ -190,6 +190,7 @@ class AnalizadorSemantico:
                              print(f"Error - Línea {numero_linea}: Variable '{palabras[posicion].strip()}' asignacion incorrecta")
                              
         
+
          elif  palabra_actual!= "" and  "=" in palabras and palabra_actual not in self.tabla_de_simbolos.obtener_nombres():
                 
              if posicion+1<conta:
@@ -197,17 +198,14 @@ class AnalizadorSemantico:
                     print(f"Error - Línea {numero_linea}: Variable '{palabras[posicion].strip()}' NO ESTA DECLARADO") 
 
 
-         elif   "(" in palabras  :
+         elif   "(" in palabras and ")" in palabras  :
                 
                 if palabra_actual in tipos_de_datos_llave: 
+
                     if palabra_actual == "int" and  palabras[ posicion+2]== "(": 
                             self.tabla_de_simbolos.agregar_funcion(palabras[1],palabras[0])
                             print(self.tabla_de_simbolos.obtener_funciones())
-                             
-
-
-                             
-
+       
                     elif palabra_actual == "string" and  palabras[ posicion+1]=="(" :    
                             self.tabla_de_simbolos.agregar_simbolo(palabras[1],palabras[0])
                             print(self.tabla_de_simbolos.obtener_funciones())
@@ -217,7 +215,16 @@ class AnalizadorSemantico:
                             self.tabla_de_simbolos.agregar_simbolo(palabras[1],palabras[0])
                             print(self.tabla_de_simbolos.obtener_funciones())
 
-
+                  
+                    elif palabra_actual == "void" and  palabras[ posicion+1] =="(": 
+                            self.tabla_de_simbolos.agregar_simbolo(palabras[1],palabras[0])
+                            print(self.tabla_de_simbolos.obtener_funciones())
+            #--------------------------------------------------------------------------------------------- 
+                    k= palabras[posicion+2]# asignar en la tabla varaiable que esta en una funcion
+ 
+                    if palabra_actual == "float" and k==",":
+                            self.tabla_de_simbolos.agregar_simbolo(palabras[posicion+1],palabra_actual,)
+                            print(self.tabla_de_simbolos.buscar_simbolo(palabras[posicion+1]))
 
 
          # self.tabla_de_simbolos.agregar_simbolo(palabras[])
