@@ -19,13 +19,14 @@ operadores = {
     '<<': 'Desplazamiento izquierdo',
     '>>': 'Desplazamiento derecho'
 }
-
-tipos_de_datos = {'int', 'float', 'string', 'void'}
+tipos_de_datos = {'int':'Entero', 'float':'flotante', 'string':'cadena', 'void':'void'}
 palabras_reservadas = {
     'if': 'if',
     'while': 'bucle while',
 }
 
+
+operadores_llave=operadores.keys()
 #-----------------------------------------------------------------
 
 class Tabla_Simbolos:
@@ -41,8 +42,6 @@ class Tabla_Simbolos:
 
     def obtener_simbolos(self):
         return list(self.simbolos.keys())   
-    
-
 def leer_archivo_texto(nombre_archivo):
     try:
        with open(nombre_archivo, "r", encoding="utf-8") as archivo:
@@ -55,6 +54,8 @@ def leer_archivo_texto(nombre_archivo):
     except Exception as e:
         print(f"Error inesperado al leer el archivo: {str(e)}")
         return None
+    
+
 def corte_palabras(fuente):
 
      # Utilizamos una expresión regular para dividir la cadena en partes de caracteres y letras
@@ -130,22 +131,13 @@ from collections import deque
 
 tipos_de_datos = {'void', 'int', 'float', 'string'}
 
-class TablaSimbolos:
-    def __init__(self):
-        self.simbolos = {}
 
-    def buscar_simbolo(self, nombre):
-        return self.simbolos.get(nombre, None)
-
-    def agregar_simbolo(self, nombre, tipo, alcance):
-        if nombre not in self.simbolos:
-            self.simbolos[nombre] = {'tipo': tipo, 'alcance': alcance}
     
 
 
 def analizar_codigo(nombre_archivo):
     programa = leer_archivo_texto(nombre_archivo).split('\n')
-    tabla = TablaSimbolos()
+    tabla = Tabla_Simbolos()
     
     in_funcion = False
     tipo_funcion = None
@@ -215,7 +207,9 @@ def analizar_codigo(nombre_archivo):
         
         
         
-        
+
+
+
         
 
 if __name__ == "__main__":
