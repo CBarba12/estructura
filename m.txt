@@ -1,7 +1,8 @@
-float n=“Mayor”
+int v=89
+if (v > 0.0){
 int funcion(float v, string n){
  if (v > 0.0){
- n = “Mayor”
+ n = 5
  x = x + 5
  }
  return n
