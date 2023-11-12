@@ -202,10 +202,10 @@ class AnalizadorSemantico:
                 if palabra_actual in tipos_de_datos_llave: 
                     if palabra_actual == "int" and  palabras[ posicion+2]== "(": 
                             self.tabla_de_simbolos.agregar_funcion(palabras[1],palabras[0])
-
-
-    
                             print(self.tabla_de_simbolos.obtener_funciones())
+                             
+
+
                              
 
                     elif palabra_actual == "string" and  palabras[ posicion+1]=="(" :    
