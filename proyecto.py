@@ -242,10 +242,23 @@ class AnalizadorSemantico:
                 
                 # if  self.tabla_de_simbolos.buscar_simbolo(j) and k in self.tabla_de_simbolos.obtener_simbolos:
                  if es_numero(k) and es_numero(j):
-                     print("hola")
+                     print("todo bien con la comparacion")
+                   
+                     
                  elif es_numero(k)==False and es_numero(j)==False:
-                     if self.tabla_de_simbolos.buscar_simbolo()
-                         
+                     
+                     if self.tabla_de_simbolos.obtener_tipo(k) and  self.tabla_de_simbolos.obtener_tipo(j) :
+                         print(self.tabla_de_simbolos.obtener_tipo(k))
+                         print(self.tabla_de_simbolos.obtener_tipo(j))
+                     
+                     else:
+                         print(f"Error - Línea {numero_linea}:  diferenci de variable")   
+                
+                 elif  es_numero(k)==False and  es_numero(j)==True:
+                    print(f"Error - Línea {numero_linea}:  NO ESTA DECLARADO") 
+                    
+                 elif  es_numero(k)==True and  es_numero(j)==False:
+                    print(f"Error - Línea {numero_linea}:  NO ESTA DECLARADO") 
               
                         
                        

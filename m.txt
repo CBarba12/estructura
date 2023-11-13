@@ -1,5 +1,7 @@
-int v=89
-if (v > 0.0){
+int g=90
+int d=56
+if (g > 5)
+
 int funcion(float v, string n){
  if (v > 0.0){
  n = 5
