@@ -181,7 +181,7 @@ class AnalizadorSemantico:
                     if palabras[posicion+1]=="=" :
                         k= palabras[posicion+2]
                             
-                        if self.tabla_de_simbolos.obtener_tipo(palabra_actual) == "int" and k=='"' :
+                        if self.tabla_de_simbolos.obtener_tipo(palabra_actual) == "int" or  self.tabla_de_simbolos.obtener_tipo(palabra_actual) == "float" and k=='"' :
                                 print(f"Error - Línea {numero_linea}: Variable '{palabras[posicion].strip()}' asignacion incorrecta")
                                  
                              
@@ -190,7 +190,7 @@ class AnalizadorSemantico:
                              
         
 
-            elif  palabra_actual!= "" and  "=" in palabras and palabra_actual not in self.tabla_de_simbolos.obtener_nombres():
+            elif  palabra_actual!= "" and  "=" in palabras and palabra_actual not in self.tabla_de_simbolos.obtener_nombres() and palabra_actual not in palabras_reservadas_llave and "(" not in palabras :
                 
                 if posicion+1<conta:
                     if palabras[posicion+1]=="=" :
@@ -206,21 +206,21 @@ class AnalizadorSemantico:
 
                     if palabra_actual == "int" and  palabras[ posicion+2]== "(": 
                             self.tabla_de_simbolos.agregar_funcion(palabras[1],palabras[0])
-                            print(self.tabla_de_simbolos.obtener_funciones())
+                            
        
-                    elif palabra_actual == "string" and  palabras[ posicion+1]=="(" :    
-                            self.tabla_de_simbolos.agregar_simbolo(palabras[1],palabras[0])
-                            print(self.tabla_de_simbolos.obtener_funciones())
+                    elif palabra_actual == "string" and  palabras[ posicion+2]=="(" :    
+                            self.tabla_de_simbolos.agregar_funcion(palabras[1],palabras[0])
+                           
 
 
-                    elif palabra_actual == "float" and  palabras[ posicion+1] =="(": 
-                            self.tabla_de_simbolos.agregar_simbolo(palabras[1],palabras[0])
-                            print(self.tabla_de_simbolos.obtener_funciones())
+                    elif palabra_actual == "float" and  palabras[ posicion+2] =="(": 
+                            self.tabla_de_simbolos.agregar_funcion(palabras[1],palabras[0])
+                            
 
                   
-                    elif palabra_actual == "void" and  palabras[ posicion+1] =="(": 
-                            self.tabla_de_simbolos.agregar_simbolo(palabras[1],palabras[0])
-                            print(self.tabla_de_simbolos.obtener_funciones())
+                    elif palabra_actual == "void" and  palabras[ posicion+2] =="(": 
+                            self.tabla_de_simbolos.agregar_funcion(palabras[1],palabras[0])
+                            
             #--------------------------------------------------------------------------------------------- 
                     k= palabras[posicion+2]# asignar en la tabla varaiable que esta en una funcion
  
@@ -234,7 +234,9 @@ class AnalizadorSemantico:
                     
                     if palabra_actual == "string" and (k=="," or k==")"):
                             self.tabla_de_simbolos.agregar_simbolo(palabras[posicion+1],palabra_actual,)
-                            
+                    
+                    if palabra_actual == "void" and (k=="," or k==")"):  
+                          print(f"Error - Línea {numero_linea}: asignacion {palabra_actual}  invalida")
           
             if palabra_actual in palabras_reservadas_llave and "(" in palabras and ")" in palabras  :
                  k= palabras[posicion+2]
@@ -242,7 +244,9 @@ class AnalizadorSemantico:
                 
                 # if  self.tabla_de_simbolos.buscar_simbolo(j) and k in self.tabla_de_simbolos.obtener_simbolos:
                  if es_numero(k) and es_numero(j):
-                     print("todo bien con la comparacion")
+
+                    if "=" in palabras :
+                      print(f"Error - Línea {numero_linea}:  aignacion invalida")   
                    
                      
                  elif es_numero(k)==False and es_numero(j)==False:
@@ -252,14 +256,48 @@ class AnalizadorSemantico:
                          print(self.tabla_de_simbolos.obtener_tipo(j))
                      
                      else:
-                         print(f"Error - Línea {numero_linea}:  diferenci de variable")   
+                         print(f"Error - Línea {numero_linea}:  diferencia de variable")   
                 
                  elif  es_numero(k)==False and  es_numero(j)==True:
-                    print(f"Error - Línea {numero_linea}:  NO ESTA DECLARADO") 
+                    
+
+                    if self.tabla_de_simbolos.obtener_tipo(k)=="string" or self.tabla_de_simbolos.obtener_tipo(k)==None:   
+                            print(f"Error - Línea {numero_linea}:  DIFERENCIAS EN LA DECLARACION DE VARIABLES") 
+                    
+                
+
                     
                  elif  es_numero(k)==True and  es_numero(j)==False:
-                    print(f"Error - Línea {numero_linea}:  NO ESTA DECLARADO") 
-              
+                    if self.tabla_de_simbolos.obtener_tipo(j) !="int" :
+                        print(f"Error - Línea {numero_linea}:  DIFERENCIAS EN LA DECLARACION DE VARIABLES") 
+            
+            if palabra_actual == "return" :
+                 if conta>1:
+                     nombre=self.tabla_de_simbolos.obtener_nombres_funciones()
+                     if len(nombre)>0: 
+
+                        if self.tabla_de_simbolos.buscar_funcion(nombre[0])!=None:
+                       
+                           tipo_funcion=self.tabla_de_simbolos.obtener_tipo_retorno_funcion(nombre[0]) 
+                           nombre_retorno=self.tabla_de_simbolos.obtener_tipo(palabras[1])
+
+                           if tipo_funcion !=None and nombre_retorno !=None:
+                                
+                                if(nombre_retorno!=tipo_funcion): # si son diferentes  el retorno es error
+                                    print(f"Error - Línea {numero_linea}:  valor de retorno no coincide con la declaración de funcion")
+                          
+                           elif  (tipo_funcion=="int" or tipo_funcion=="float") and palabras[1]=='"':
+                                print(f"Error - Línea {numero_linea}:  valor de retorno no coincide con la declaración de funcion")
+                                                                 
+                           elif  tipo_funcion=="String"  and  es_numero(palabras[1]):
+                                    print(f"Error - Línea {numero_linea}:  valor de retorno no coincide con la declaración de funcion")
+
+                           elif  tipo_funcion=="void":
+                                    print(f"Error - Línea {numero_linea}:  valor de retorno no coincide con la declaración de funcion")
+
+
+                        else:
+                            print(f"Error - Línea {numero_linea}:  valor de retorno no coincide con la declaración de funcion") 
                         
                        
          #-----------------------------------con los while y if -------------------------------------------------
