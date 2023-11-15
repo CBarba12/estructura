@@ -190,7 +190,10 @@ class AnalizadorSemantico:
                                         self.tabla_de_simbolos.agregar_simbolo(palabras[posicion+1],palabras[posicion],palabras[cont+1])
                                     else:
                                       print(f"Error - Línea {numero_linea}: asignacion de tipo de dato   incorrecta")     
-                                        
+
+                                elif  palabras[posicion+1] in self.tabla_de_simbolos.obtener_nombres():
+                                    print(f"Error - Línea {numero_linea}: asignacion de tipo de dato   incorrecta")   
+                                
                                 else:
                                     self.tabla_de_simbolos.agregar_simbolo(palabras[posicion+1],palabras[posicion],palabras[posicion+4])
 
