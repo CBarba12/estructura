@@ -108,6 +108,7 @@ def corte_palabras(oracion):
     palabras_y_simbolos = re.findall(r'\b\w+\b|\S', oracion)
     return palabras_y_simbolos
 
+
 class AnalizadorSemantico:
     def __init__(self):
         self.tabla_de_simbolos = Tabla_Simbolos()  # Asumo que TablaDeSimbolos es la clase que estás utilizando
@@ -151,21 +152,61 @@ class AnalizadorSemantico:
                         k= palabras[posicion+3]
 
 
-                     
-                        if palabra_actual == "int" and es_numero(k):
-                               self.tabla_de_simbolos.agregar_simbolo(palabras[posicion+1],palabras[posicion],palabras[posicion+3])
-                             
+                      #  print(self.tabla_de_simbolos.buscar_simbolo(k))
+                        if palabra_actual == "int" and ( es_numero(k) or self.tabla_de_simbolos.obtener_tipo(k)=="int"):
+                           
+                            pos = posicion + 4
+
+                            if pos<conta:
+                                for cont in range(pos, len(palabras)):
+                                    if palabras[cont] in operadores_llave:
+                                        if  ( es_numero(palabras[cont+1]) or self.tabla_de_simbolos.obtener_tipo(palabras[cont+1])=="int"):
+                                             
+                                            self.tabla_de_simbolos.agregar_simbolo(palabras[posicion+1],palabras[posicion],palabras[cont+1])
+                                            print(self.tabla_de_simbolos.obtener_valor( palabras[posicion+1]))
+
+                                    
+                                        else:
+                                            print(f"Error - Línea {numero_linea}: asignacion de tipo de dato   incorrecta")
+                            else:
+                                self.tabla_de_simbolos.agregar_simbolo(palabras[posicion+1],palabras[posicion],palabras[posicion+3])
+         
 
                         elif palabra_actual == "string" and  es_numero(k)==False  and k!="":
-                                    self.tabla_de_simbolos.agregar_simbolo(palabras[1],palabras[0],palabras[4])
-                                    print ( self.tabla_de_simbolos.obtener_simbolos())
+                                    
+                                pos = posicion + 6
+                                total=True
+
+                                if pos<conta:
+                                    for cont in range(pos, len(palabras)):
+                                        if palabras[cont] in operadores_llave:
+                                            
+                                            if  ( es_numero(palabras[cont+1]) or self.tabla_de_simbolos.obtener_tipo(palabras[cont+1])!="String"):
+                                                  total=False
+                                               
+                                            
+
+                                    if total:
+                                        self.tabla_de_simbolos.agregar_simbolo(palabras[posicion+1],palabras[posicion],palabras[cont+1])
+                                    else:
+                                      print(f"Error - Línea {numero_linea}: asignacion de tipo de dato   incorrecta")     
+                                        
+                                else:
+                                    self.tabla_de_simbolos.agregar_simbolo(palabras[posicion+1],palabras[posicion],palabras[posicion+4])
+
+                                    
+                                  ##  self.tabla_de_simbolos.agregar_simbolo(palabras[1],palabras[0],palabras[4])
+                                    ##print ( self.tabla_de_simbolos.obtener_simbolos())
 
                         elif palabra_actual == "float" and  es_numero(k) :
                                     self.tabla_de_simbolos.agregar_simbolo(palabras[1],palabras[0],palabras[3])
+                        
+                        elif palabra_actual == "void" and  es_numero(k)==False  and k!="" or es_numero(k)==True and '(' is not palabras:
+                                    print(f"Error - Línea {numero_linea}: tipo de dato '{palabras[posicion].strip()}'  incorrecta")
 
                         else:
-                            #elif palabra_actual == "void" and  es_numero(k)==False  and k!="" or es_numero(k)==True and '(' is not palabras:
-                                    print(f"Error - Línea {numero_linea}: tipo de dato '{palabras[posicion].strip()}'  incorrecta")
+                          
+                            print(f"Error - Línea {numero_linea}: tipo de dato '{palabras[posicion].strip()}'  incorrecta")
                                     
                     
 
@@ -180,8 +221,42 @@ class AnalizadorSemantico:
                 if posicion+1<conta and posicion+2<conta: # valorar si la busqueda es correcta
                     if palabras[posicion+1]=="=" :
                         k= palabras[posicion+2]
+
+
+                       # print(self.tabla_de_simbolos.obtener_tipo(palabra_actual))
+                       
+                        if self.tabla_de_simbolos.obtener_tipo(palabra_actual) == "int" or  self.tabla_de_simbolos.obtener_tipo(palabra_actual) == "float":
                             
-                        if self.tabla_de_simbolos.obtener_tipo(palabra_actual) == "int" or  self.tabla_de_simbolos.obtener_tipo(palabra_actual) == "float" and k=='"' :
+                            pos = posicion + 3
+                            if pos<conta:
+                                for cont in range(pos, len(palabras)):
+                                    if palabras[cont] in  operadores_llave:
+                                            
+                                        if  ( es_numero(palabras[cont+1])==False) or (self.tabla_de_simbolos.obtener_tipo(palabras[cont+1])=="string"):
+                                              
+                                             print(f"Error - Línea {numero_linea}: asignacion de tipo de dato   incorrecta")
+
+                        
+                        elif self.tabla_de_simbolos.obtener_tipo(palabra_actual) == "string" :
+                            
+                            pos = posicion + 3
+                            if pos<conta:
+                                for cont in range(pos, len(palabras)):
+                                    if palabras[cont] in  operadores_llave:
+                                            
+                                        if  ( es_numero(palabras[cont+1])==True) or ( (self.tabla_de_simbolos.obtener_tipo(palabras[cont+1])=="int")or (self.tabla_de_simbolos.obtener_tipo(palabras[cont+1])=="float") ):
+                                              
+                                             print(f"Error - Línea {numero_linea}: asignacion de tipo de dato   incorrecta")                    
+
+                        else:
+                            print(f"Error - Línea {numero_linea}: asignacion de tipo de dato   incorrecta")          
+                                  
+
+                            
+                       
+                             
+                        
+                        if ((self.tabla_de_simbolos.obtener_tipo(palabra_actual) == "int" )or  self.tabla_de_simbolos.obtener_tipo(palabra_actual) == "float") and k=='"' :
                                 print(f"Error - Línea {numero_linea}: Variable '{palabras[posicion].strip()}' asignacion incorrecta")
                                  
                              
@@ -190,7 +265,7 @@ class AnalizadorSemantico:
                              
         
 
-            elif  palabra_actual!= "" and  "=" in palabras and palabra_actual not in self.tabla_de_simbolos.obtener_nombres() and palabra_actual not in palabras_reservadas_llave and "(" not in palabras :
+            elif ( palabra_actual!= "") and  ("=" in palabras) and (palabra_actual not in self.tabla_de_simbolos.obtener_nombres()) and (palabra_actual not in palabras_reservadas_llave )and "(" not in palabras :
                 
                 if posicion+1<conta:
                     if palabras[posicion+1]=="=" :
@@ -307,6 +382,8 @@ class AnalizadorSemantico:
          # self.tabla_de_simbolos.agregar_simbolo(palabras[])
 
  
+
+
 
 
 if __name__ == "__main__":

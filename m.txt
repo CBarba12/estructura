@@ -1,8 +1,10 @@
-x = 40
-int funcion(float v, string n){
- if (v > 0.0){
+int x = 45+"90"
+ x = 67+90
+void funcion(float v, string n){
+ if (v > "holadd"){
  n = “Mayor”
  x = x + 5
+ v=56.0
  }
- return n
+ return x
  } 
